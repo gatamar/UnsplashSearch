@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os
 
 class TagCell: UITableViewCell {
     
@@ -27,7 +28,13 @@ class ViewController: UIViewController {
         factory = createFinderFactory()
     }
 
+    static let pointsOfInterest = OSLog(subsystem: "com.apple.SolarSystem", category: .pointsOfInterest)
     func createSubviews() {
+        os_signpost(.begin, log: ViewController.pointsOfInterest, name: "createSubviews")
+        defer {
+            os_signpost(.end, log: ViewController.pointsOfInterest, name: "createSubviews")
+        }
+        
         let frameW = view.bounds.width, frameH = view.bounds.height
         
         let imageSize = frameH*0.6
@@ -107,6 +114,8 @@ class ViewController: UIViewController {
     }
     
     @objc private func onSearchButtonPressed() {
+        os_signpost(.begin, log: ViewController.pointsOfInterest, name: "onSearchButtonPressed")
+        
         guard let imageFinder = factory?.imageFinder() else {
             fatalError("Can't create image finder")
         }
@@ -118,6 +127,7 @@ class ViewController: UIViewController {
                 self.welcomeImageLabel!.isHidden = true
                 self.imageView!.image = self.curImage
                 self.imageView!.setNeedsDisplay()
+                os_signpost(.end, log: ViewController.pointsOfInterest, name: "onSearchButtonPressed")
             }
         }
     }

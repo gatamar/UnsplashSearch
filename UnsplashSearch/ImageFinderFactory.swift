@@ -8,9 +8,13 @@
 
 import Foundation
 import UIKit
+import os
 
 private class UnsplashImageFinder: NSObject, ImageFinder {
+    
+    static let pointsOfInterest = OSLog(subsystem: "com.apple.SolarSystem", category: .pointsOfInterest)
     func findImage(tags: [String], completion: @escaping (_ image: UIImage?) -> Void) {
+        os_signpost(.begin, log: UnsplashImageFinder.pointsOfInterest, name: "findImage")
         let searchURL = url(for: tags)
         print(searchURL)
         
@@ -21,6 +25,8 @@ private class UnsplashImageFinder: NSObject, ImageFinder {
                     self.handleServerError(response)
                     return
             }
+            
+            os_signpost(.end, log: UnsplashImageFinder.pointsOfInterest, name: "findImage")
             
             let knownImageTypes = ["image/jpeg", "image/png"]
             if !knownImageTypes.contains(mimeType) {
